@@ -16,7 +16,7 @@ jobs:
             runner: macos-14
           - arch: x64
             target: x86_64-apple-darwin
-            runner: macos-13
+            runner: macos-14
 
     steps:
       - name: Checkout
@@ -75,4 +75,3 @@ jobs:
           name: yanshu-macos-${{ matrix.arch }}
           path: ${{ env.ZIP_PATH }}
           if-no-files-found: error
-
