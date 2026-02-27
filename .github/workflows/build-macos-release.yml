@@ -1,0 +1,78 @@
+name: Build macOS Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    name: macOS (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            target: aarch64-apple-darwin
+            runner: macos-14
+          - arch: x64
+            target: x86_64-apple-darwin
+            runner: macos-13
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Setup Python (host tools)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Prepare bundled python runtime
+        run: |
+          python scripts/prepare_python_embed.py \
+            --triple "${{ matrix.target }}" \
+            --dest "python_embed" \
+            --python-series "3.10"
+          ./python_embed/bin/python3 -m pip install --upgrade pip
+          ./python_embed/bin/python3 -m pip install --no-cache-dir -r agent/requirements.txt
+          find python_embed -type d -name "__pycache__" -prune -exec rm -rf {} +
+          find python_embed -type f -name "*.pyc" -delete
+
+      - name: Build Tauri app bundle
+        run: npm run tauri build -- --target "${{ matrix.target }}" --bundles app
+
+      - name: Pack app as zip
+        run: |
+          set -euo pipefail
+          BUNDLE_DIR="src-tauri/target/${{ matrix.target }}/release/bundle/macos"
+          APP_PATH="$(find "$BUNDLE_DIR" -maxdepth 1 -name '*.app' | head -n 1)"
+          if [ -z "$APP_PATH" ]; then
+            echo "No .app bundle found in $BUNDLE_DIR"
+            exit 1
+          fi
+          mkdir -p output
+          ZIP_NAME="yanshu_${{ matrix.arch }}_macos_unsigned.zip"
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "output/$ZIP_NAME"
+          echo "ZIP_PATH=output/$ZIP_NAME" >> "$GITHUB_ENV"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: yanshu-macos-${{ matrix.arch }}
+          path: ${{ env.ZIP_PATH }}
+          if-no-files-found: error
+

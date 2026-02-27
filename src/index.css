@@ -1,0 +1,1256 @@
+@import "tailwindcss";
+
+:root {
+  /* ==========================================================
+     核心变异变量基准 (Fallback Constants)
+     ========================================================== */
+  --bg-base: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-input: #FFFFFF;
+  --bg-popup: #FFFFFF;
+  --bg-popup-soft: #F7F8FA;
+  --bg-border: #E5E7EB;
+  --sidebar-width: 260px;
+
+  --text-primary: #171717;
+  --text-secondary: #737373;
+
+  --theme-accent: #3B82F6;
+  --accent-dim: rgba(59, 130, 246, 0.1);
+
+  /* UI 范式特征骨架 (UI Paradigm Skeleton) */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --btn-radius: 6px;
+
+  --border-width: 1px;
+  --border-style: solid;
+
+  --panel-filter: none;
+  --card-opacity: 1;
+
+  /* 三维空间层级映射 (Spatial Elevation) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --btn-shadow: var(--shadow-sm);
+  --btn-hover-shadow: var(--shadow-md);
+
+  /* 交互态压感矩阵 (Kinetic Matrix) */
+  --btn-hover-y: -1px;
+  --btn-active-y: 0px;
+  --btn-active-shadow: var(--shadow-sm);
+  --hover-filter: brightness(1.05);
+  --inner-glow: none;
+  --glass-highlight: transparent;
+
+  /* 排版基准 (Typography Base) */
+  --font-base: "Rajdhani", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --ui-font-weight: 500;
+
+  /* 氛围光效 (Ambient Glow) */
+  --ambient-light: none;
+
+  /* 兼容变量（供旧页面内联样式统一调用） */
+  --bg: var(--bg-base);
+  --text: var(--text-primary);
+  --border: var(--bg-border);
+  --accent: var(--theme-accent);
+  --accent-gold: var(--theme-accent);
+  --accent-gold-dim: var(--accent-dim);
+  --status-active: #4cbff1;
+  --status-active-dim: rgba(76, 191, 241, 0.2);
+  --bg-secondary: var(--bg-input);
+  --bg-active: var(--accent-dim);
+
+  /* 二游页面级变量（由 App.tsx 按路由注入） */
+  --anime-bg-start: #DFEBFB;
+  --anime-bg-end: #C8DCF3;
+  --anime-border: rgba(147, 189, 235, 0.52);
+}
+
+/* ==========================================================
+   1. 🍏 Apple Minimal (果味极简)
+   特色：大量留白，极淡虚焦投影，无边界感，极高圆角
+   ========================================================== */
+[data-theme='apple-minimal'],
+[data-theme='light'] {
+  --bg-base: #F5F5F7;
+  --bg-card: #FFFFFF;
+  --bg-input: #F5F5F7;
+  --bg-border: rgba(0, 0, 0, 0.04);
+
+  --text-primary: #1D1D1F;
+  --text-secondary: #86868B;
+
+  --theme-accent: #0066CC;
+  --accent-dim: rgba(0, 102, 204, 0.1);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --btn-radius: 8px;
+  --border-width: 0.5px;
+  /* Hairline borders */
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.04);
+  --btn-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  --btn-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  --btn-hover-y: -0.5px;
+  --hover-filter: none;
+}
+
+/* ==========================================================
+   2. 🌫️ Glassmorphism (毛玻璃幻境)
+   特色：极高的高斯模糊，晶莹剔透的角度高光与底发光
+   ========================================================== */
+[data-theme='glass'] {
+  --bg-base: #F0F4F8;
+  /* 浅蓝灰水波底色 */
+  --bg-card: rgba(255, 255, 255, 0.45);
+  --bg-input: rgba(255, 255, 255, 0.65);
+  --bg-popup: #F6F9FC;
+  --bg-popup-soft: #FFFFFF;
+  --bg-border: rgba(255, 255, 255, 0.8);
+
+  --text-primary: #334155;
+  --text-secondary: #64748B;
+
+  --theme-accent: #0EA5E9;
+  --accent-dim: rgba(14, 165, 233, 0.2);
+
+  --ambient-light: radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.15), transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.15), transparent 40%);
+
+  --panel-filter: blur(24px) saturate(150%);
+  --radius-md: 16px;
+  --btn-radius: 10px;
+
+  --glass-highlight: rgba(255, 255, 255, 0.9);
+  --inner-glow: inset 0 1px 0 0 var(--glass-highlight);
+
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 16px 40px rgba(31, 38, 135, 0.05);
+  /* 著名的玻璃态蓝阴影 */
+  --btn-shadow: var(--shadow-sm), var(--inner-glow);
+  --btn-hover-shadow: var(--shadow-md), var(--inner-glow);
+}
+
+/* ==========================================================
+   3. 🌸 Anime (二次元手游作战界面)
+   目标：复刻参考图的冷蓝舞台、胶囊导航、切角面板和高亮主按钮
+   ========================================================== */
+[data-theme='anime'] {
+  --font-base: "Rajdhani", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+
+  --bg-base: var(--anime-bg-start);
+  --bg-card: rgba(255, 255, 255, 0.84);
+  --bg-input: rgba(255, 255, 255, 0.95);
+  --bg-popup: #F8FBFF;
+  --bg-popup-soft: #FFFFFF;
+  --bg-border: var(--anime-border);
+
+  --text-primary: #263f62;
+  --text-secondary: #6e89a8;
+
+  --theme-accent: var(--accent-gold);
+  --accent-dim: var(--accent-gold-dim);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --btn-radius: 10px;
+  --border-width: 1px;
+
+  --panel-filter: blur(10px) saturate(140%);
+
+  --shadow-sm: 0 6px 14px rgba(65, 101, 150, 0.14);
+  --shadow-md: 0 14px 30px rgba(65, 101, 150, 0.2);
+
+  --btn-shadow: 0 4px 10px rgba(72, 117, 176, 0.2);
+  --btn-hover-shadow: 0 8px 18px rgba(72, 117, 176, 0.28);
+  --btn-hover-y: -1px;
+  --btn-active-shadow: 0 2px 8px rgba(72, 117, 176, 0.24);
+
+  --ambient-light:
+    radial-gradient(circle at 10% 14%, rgba(255, 255, 255, 0.45), transparent 34%),
+    radial-gradient(circle at 88% 12%, var(--status-active-dim), transparent 36%),
+    radial-gradient(circle at 86% 82%, var(--accent-gold-dim), transparent 38%);
+
+  --bg: var(--bg-base);
+  --text: var(--text-primary);
+  --border: var(--bg-border);
+  --accent: var(--accent-gold);
+  --bg-active: var(--accent-gold-dim);
+}
+
+[data-theme='anime'] body {
+  background:
+    linear-gradient(165deg, var(--anime-bg-start) 0%, #D4E3F5 42%, var(--anime-bg-end) 100%);
+  background-attachment: fixed;
+  position: relative;
+  z-index: 0;
+}
+
+[data-theme='anime'] body::before {
+  content: none !important;
+}
+
+[data-theme='anime'] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.16) 0%, transparent 30%);
+}
+
+[data-theme='anime'] .game-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+[data-theme='anime'] .game-main {
+  position: relative;
+}
+
+[data-theme='anime'] .game-main::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width, 260px);
+  right: 0;
+  height: 64px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.32), transparent);
+  z-index: 2;
+}
+
+/* 侧栏：参考图中的圆角胶囊导航 + 舱壁质感 */
+[data-theme='anime'] .game-sidebar {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(229, 239, 252, 0.86) 48%, rgba(217, 231, 248, 0.9) 100%) !important;
+  border-right: 1px solid var(--anime-border) !important;
+  box-shadow: 6px 0 22px rgba(74, 111, 161, 0.14) !important;
+  border-radius: 0 !important;
+  overflow: hidden;
+  position: relative;
+}
+
+[data-theme='anime'] .game-sidebar::before {
+  content: none !important;
+}
+
+[data-theme='anime'] .game-sidebar__brand {
+  margin-bottom: 4px;
+}
+
+[data-theme='anime'] .game-sidebar__brand-icon {
+  border: 2px solid rgba(255, 255, 255, 0.75);
+}
+
+[data-theme='anime'] .game-back-button {
+  border-radius: 999px !important;
+  border: 1px solid var(--anime-border) !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+[data-theme='anime'] .game-sidebar__nav {
+  gap: 8px !important;
+}
+
+[data-theme='anime'] .game-nav-button {
+  border-radius: 999px !important;
+  border: 1px solid transparent !important;
+  color: var(--text-secondary) !important;
+  background: rgba(255, 255, 255, 0.24) !important;
+  backdrop-filter: blur(4px);
+}
+
+[data-theme='anime'] .game-nav-button:hover {
+  border-color: var(--anime-border) !important;
+  background: rgba(255, 255, 255, 0.48) !important;
+}
+
+[data-theme='anime'] .game-nav-button.is-active {
+  color: #ffffff !important;
+  background:
+    linear-gradient(135deg, var(--status-active) 0%, var(--accent-gold) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 4px 10px var(--accent-gold-dim) !important;
+}
+
+[data-theme='anime'] .game-project-chip,
+[data-theme='anime'] .game-theme-pill {
+  border: 1px solid var(--anime-border) !important;
+  background: rgba(255, 255, 255, 0.68) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+[data-theme='anime'] .game-theme-pill:hover {
+  border-color: var(--accent-gold) !important;
+}
+
+/* 面板质感：保留机甲舱体感，去掉右上角折角碎片 */
+[data-theme='anime'] .mc-panel {
+  border: 1px solid var(--anime-border) !important;
+  clip-path: none !important;
+  border-radius: 14px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(244, 250, 255, 0.84) 100%) !important;
+}
+
+[data-theme='anime'] .mc-panel::after {
+  content: none !important;
+}
+
+[data-theme='anime'] .mc-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--status-active), transparent 62%);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* 主按钮：干净高光，不使用点阵纹理 */
+[data-theme='anime'] button[style*="var(--accent-gold)"],
+[data-theme='anime'] button[style*="var(--accent)"] {
+  border: 1px solid rgba(255, 255, 255, 0.78) !important;
+  color: #fff !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, var(--status-active) 0%, var(--accent-gold) 100%) !important;
+  box-shadow: 0 7px 16px var(--accent-gold-dim) !important;
+}
+
+[data-theme='anime'] button[style*="var(--accent-gold)"]:hover,
+[data-theme='anime'] button[style*="var(--accent)"]:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 10px 20px var(--accent-gold-dim) !important;
+}
+
+/* 普通标签按钮：保持参考图的小胶囊形态 */
+[data-theme='anime'] button:not(.game-nav-button)[style*="background: transparent"],
+[data-theme='anime'] button:not(.game-nav-button)[style*="background: var(--bg-input)"],
+[data-theme='anime'] button:not(.game-nav-button)[style*="background: var(--bg-border)"] {
+  border-radius: 10px !important;
+  border: 1px solid var(--anime-border) !important;
+}
+
+/* 卡片/容器统一舱体边线 */
+[data-theme='anime'] div[style*="var(--bg-card)"],
+[data-theme='anime'] section[style*="var(--bg-card)"],
+[data-theme='anime'] aside,
+[data-theme='anime'] .drawer-content {
+  border-color: var(--anime-border) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* 输入控件 */
+[data-theme='anime'] input,
+[data-theme='anime'] select,
+[data-theme='anime'] textarea {
+  border: 1px solid var(--anime-border) !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.93) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+[data-theme='anime'] input:focus,
+[data-theme='anime'] select:focus,
+[data-theme='anime'] textarea:focus {
+  border-color: var(--status-active) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--status-active-dim) !important;
+}
+
+/* 项目页结构 */
+.projects-screen {
+  padding: 40px;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.projects-header__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.projects-title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.projects-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.projects-header__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.projects-create-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.projects-import-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid var(--bg-border) !important;
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.project-card {
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--bg-border);
+  background: var(--bg-card);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.project-card:hover {
+  border-color: var(--accent-gold);
+  transform: translateY(-1px);
+}
+
+.project-card__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.project-card__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.project-card__name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.project-card__status {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.project-card__delete-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px !important;
+  border: 1px solid var(--bg-border) !important;
+  background: var(--bg-input) !important;
+  color: #ef5350 !important;
+}
+
+.project-card__genre {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  align-self: flex-start;
+  background: var(--bg-input);
+  color: var(--text-secondary);
+}
+
+.project-card__meta {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.project-card__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.project-card__meta-item--right {
+  margin-left: auto;
+}
+
+.projects-empty {
+  text-align: center;
+  padding: 60px;
+  color: var(--text-secondary);
+}
+
+.projects-empty__title {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.projects-empty__desc {
+  font-size: 13px;
+}
+
+.projects-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.projects-modal {
+  width: min(680px, 100%);
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  border: 1px solid var(--bg-border);
+  background: var(--bg-popup);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+}
+
+.projects-modal--compact {
+  width: min(560px, 100%);
+}
+
+.projects-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--bg-border);
+}
+
+.projects-modal__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.projects-modal__close {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 8px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.projects-modal__form {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px;
+}
+
+.projects-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.projects-form-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.projects-form-field input,
+.projects-form-field textarea {
+  width: 100%;
+}
+
+.projects-form-field textarea {
+  min-height: 86px;
+  resize: vertical;
+}
+
+.projects-form-help {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.projects-advanced {
+  border: 1px solid var(--bg-border);
+  border-radius: 10px;
+  background: var(--bg-popup-soft);
+  overflow: hidden;
+}
+
+.projects-modal input,
+.projects-modal select,
+.projects-modal textarea {
+  background: var(--bg-popup-soft) !important;
+}
+
+.projects-advanced__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.projects-advanced__icon {
+  transition: transform 0.2s ease;
+}
+
+.projects-advanced__icon.is-open {
+  transform: rotate(180deg);
+}
+
+.projects-advanced__content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 12px 12px;
+}
+
+.projects-modal__actions {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--bg-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.projects-modal__cancel {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.projects-modal__submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #000 !important;
+  background: var(--accent-gold) !important;
+  border-color: transparent !important;
+}
+
+.projects-modal__submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .projects-screen {
+    padding: 24px 16px;
+  }
+
+  .projects-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .projects-header__actions {
+    width: 100%;
+  }
+
+  .projects-header__actions button {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .projects-modal-overlay {
+    padding: 12px;
+  }
+
+  .projects-modal {
+    max-height: calc(100vh - 24px);
+  }
+
+  .projects-modal__header {
+    padding: 14px 16px;
+  }
+
+  .projects-modal__form {
+    padding: 14px 16px;
+  }
+}
+
+[data-theme='anime'] .projects-screen {
+  max-width: 1180px;
+  padding: 36px 48px 40px;
+}
+
+[data-theme='anime'] .projects-header {
+  margin-bottom: 24px;
+}
+
+[data-theme='anime'] .projects-title {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: #2a4c73;
+}
+
+[data-theme='anime'] .projects-subtitle {
+  font-size: 15px;
+  color: #6d89ac;
+}
+
+[data-theme='anime'] .projects-create-btn {
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.82) !important;
+  background: linear-gradient(135deg, var(--status-active) 0%, var(--accent-gold) 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 9px 20px var(--accent-gold-dim) !important;
+}
+
+[data-theme='anime'] .projects-import-btn {
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 14px !important;
+  border: 1px solid rgba(150, 193, 236, 0.78) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #2f527a !important;
+  box-shadow: 0 8px 16px rgba(107, 149, 196, 0.16) !important;
+}
+
+[data-theme='anime'] .projects-grid {
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+[data-theme='anime'] .project-card {
+  border-radius: 14px;
+  border: 1px solid var(--anime-border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(245, 251, 255, 0.85) 100%);
+  box-shadow: 0 10px 22px rgba(79, 117, 169, 0.14);
+}
+
+[data-theme='anime'] .project-card:hover {
+  border-color: rgba(113, 192, 246, 0.8);
+  box-shadow: 0 14px 24px rgba(79, 117, 169, 0.2);
+  transform: translateY(-2px);
+}
+
+[data-theme='anime'] .project-card__name {
+  color: #2f527a;
+}
+
+[data-theme='anime'] .project-card__status,
+[data-theme='anime'] .project-card__genre {
+  border: 1px solid rgba(156, 193, 234, 0.56);
+}
+
+[data-theme='anime'] .projects-empty {
+  border-radius: 14px;
+  border: 1px solid var(--anime-border);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+[data-theme='anime'] .projects-modal {
+  border-color: var(--anime-border);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F4FAFF 100%);
+}
+
+[data-theme='anime'] .projects-advanced {
+  border-color: var(--anime-border);
+  background: #FFFFFF;
+}
+
+/* Workshop 右侧一体化舱体：上区+下区连成同一块皮肤 */
+[data-theme='anime'] .workshop-side-rail {
+  border-left: 1px solid rgba(149, 186, 224, 0.62) !important;
+  padding: 20px 16px 20px 18px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+[data-theme='anime'] .workshop-side-shell {
+  border-radius: 16px !important;
+  border: 1px solid var(--anime-border) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(241, 248, 255, 0.88) 100%) !important;
+  box-shadow: 0 12px 24px rgba(78, 116, 167, 0.16) !important;
+}
+
+[data-theme='anime'] .workshop-side-main {
+  gap: 10px !important;
+  padding: 12px 12px 0 !important;
+}
+
+[data-theme='anime'] .workshop-side-console {
+  border-top: 1px solid rgba(151, 188, 227, 0.72) !important;
+  padding: 10px 12px 12px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.12) 100%);
+}
+
+[data-theme='anime'] .workshop-panel-surface {
+  border-color: rgba(151, 188, 227, 0.58) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(248, 252, 255, 0.82) 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+/* ==========================================================
+   4. 🧱 Brutalism (新粗野主义)
+   特色：叛逆反极简，粗犷强烈的 2-3px 纯黑硬框，0圆角或微圆角，高饱和撞色
+   ========================================================== */
+[data-theme='brutalism'] {
+  --bg-base: #FDF9E3;
+  /* 偏旧工业黄纸 */
+  --bg-card: #FFFFFF;
+  --bg-input: #FFFFFF;
+  --bg-border: #000000;
+
+  --text-primary: #000000;
+  --text-secondary: #000000;
+
+  --theme-accent: #FF5A5F;
+  /* 暴力红 */
+  --accent-dim: rgba(255, 90, 95, 0.2);
+
+  --font-base: "Space Mono", Monaco, "Courier New", monospace;
+  --ui-font-weight: 700;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --btn-radius: 0px;
+
+  --border-width: 2.5px;
+  /* STRONG lines */
+
+  --shadow-sm: 4px 4px 0px #000000;
+  --shadow-md: 8px 8px 0px #000000;
+
+  --btn-shadow: 4px 4px 0px #000000;
+  --btn-hover-shadow: 6px 6px 0px #000000;
+  --btn-active-shadow: 0px 0px 0px #000000;
+  /* Click flattens the shadow */
+
+  --btn-hover-y: -2px;
+  --btn-active-y: 4px;
+  /* Physical pushing */
+  --hover-filter: none;
+}
+
+/* ==========================================================
+   5. 🧸 Claymorphism (微缩黏土风)
+   特色：蓬松可爱的 3D 橡皮泥质感，多层柔软内发光，巨大圆角
+   ========================================================== */
+[data-theme='claymorphism'] {
+  --bg-base: #F3F1EC;
+  --bg-card: #FDFBFA;
+  --bg-input: #F3F1EC;
+  --bg-border: transparent;
+  /* No borders in clay */
+
+  --text-primary: #5A524A;
+  --text-secondary: #A39B93;
+
+  --theme-accent: #FF9B8A;
+  /* 珊瑚黏土橘 */
+  --accent-dim: rgba(255, 155, 138, 0.15);
+
+  --font-base: "Quicksand", "Nunito", sans-serif;
+  --ui-font-weight: 600;
+
+  --radius-sm: 16px;
+  --radius-md: 24px;
+  --radius-lg: 32px;
+  --btn-radius: 16px;
+
+  /* Double inset shadows create the 3D puffiness */
+  --inner-glow: inset -4px -4px 8px rgba(0, 0, 0, 0.06), inset 4px 4px 8px rgba(255, 255, 255, 1);
+  --shadow-md: 8px 16px 24px rgba(0, 0, 0, 0.06), var(--inner-glow);
+  --shadow-sm: 4px 8px 16px rgba(0, 0, 0, 0.04), var(--inner-glow);
+
+  --btn-shadow: var(--shadow-sm);
+  --btn-hover-shadow: var(--shadow-md);
+
+  /* Bouncy push */
+  --btn-hover-y: -2px;
+  --btn-active-y: 2px;
+  --btn-active-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.08), inset -4px -4px 8px rgba(255, 255, 255, 1);
+}
+
+/* ==========================================================
+   6. 📖 E-Ink Book (水墨电纸书)
+   特色：极致护眼去色，防蓝光，纸质纹理色板，最适合纯粹写作
+   ========================================================== */
+[data-theme='e-ink'] {
+  --bg-base: #E8E5DF;
+  /* 淡淡的米灰纸张底色 */
+  --bg-card: #F4F1EC;
+  --bg-input: #E8E5DF;
+  /* Instead of lines, we use soft value differences */
+  --bg-border: #D1CDA;
+
+  --text-primary: #2A2825;
+  /* Not pure black, soft ink */
+  --text-secondary: #74716B;
+
+  --theme-accent: #5F5B54;
+  /* 墨青灰高亮，避免彩色干扰 */
+  --accent-dim: rgba(95, 91, 84, 0.1);
+
+  --font-base: "Merriweather", "STSong", "SimSun", serif;
+  /* 衬线体！ */
+  --ui-font-weight: 400;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --btn-radius: 3px;
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --btn-shadow: inset 0 0 0 1px #D1CDCA;
+  /* Mock borders with inset */
+  --btn-hover-shadow: inset 0 0 0 1px #8A857D;
+
+  --btn-hover-y: 0px;
+  --btn-active-y: 0px;
+  --hover-filter: none;
+}
+
+/* ==========================================================
+   7. 💻 Retro Terminal (复古黑客终端)
+   特色：全黑底，极细绿边框，等宽代码字体，控制台微光
+   ========================================================== */
+[data-theme='terminal'],
+[data-theme='dark'] {
+  --bg-base: #000000;
+  --bg-card: #050505;
+  --bg-input: #0A0A0A;
+  --bg-border: #1A3A1A;
+  /* 暗绿网格线 */
+
+  --text-primary: #33FF33;
+  /* 终端经典磷屏绿 */
+  --text-secondary: #1F7A1F;
+
+  --theme-accent: #33FF33;
+  --accent-dim: rgba(51, 255, 51, 0.1);
+
+  --font-base: "Fira Code", "Courier New", monospace;
+  --ui-font-weight: 500;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --btn-radius: 0px;
+
+  --ambient-light: radial-gradient(circle at 50% 50%, rgba(51, 255, 51, 0.03), transparent 80%);
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --btn-shadow: 0 0 4px rgba(51, 255, 51, 0.3);
+  /* CRT 发光效 */
+  --btn-hover-shadow: 0 0 12px rgba(51, 255, 51, 0.6);
+  --inner-glow: none;
+
+  --btn-hover-y: 0px;
+  --btn-active-y: 0px;
+}
+
+/* ==========================================================
+   8. 🚀 Sci-Fi Void (科幻深空)
+   特色：极致内敛的深邃空域，只有在操作处会有细微的高级蓝紫激光勾勒
+   ========================================================== */
+[data-theme='sci-fi'] {
+  --bg-base: #03040B;
+  /* 接近绝对的虚空蓝黑 */
+  --bg-card: rgba(10, 12, 21, 0.7);
+  /* 半透黑甲 */
+  --bg-input: rgba(6, 7, 13, 0.8);
+  --bg-popup: #0F1526;
+  --bg-popup-soft: #161E34;
+  --bg-border: rgba(30, 41, 59, 0.8);
+
+  --text-primary: #E2E8F0;
+  --text-secondary: #475569;
+
+  --theme-accent: #4F46E5;
+  /* 深邃的高级星光紫蓝 */
+  --accent-dim: rgba(79, 70, 229, 0.2);
+
+  --glass-highlight: rgba(79, 70, 229, 0.4);
+  --inner-glow: inset 0 1px 0 0 var(--glass-highlight);
+
+  --ambient-light: radial-gradient(circle at 50% 0%, rgba(79, 70, 229, 0.08), transparent 50%);
+
+  --panel-filter: blur(12px) saturate(120%);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --btn-radius: 6px;
+
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.8);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.9);
+
+  --btn-shadow: var(--shadow-sm), var(--inner-glow);
+  --btn-hover-shadow: var(--shadow-md), 0 0 16px rgba(79, 70, 229, 0.4), var(--inner-glow);
+
+  --btn-hover-y: -1px;
+}
+
+/* ==========================================================
+   全局重置与 CSS 变量驱动的组件行为映射
+   ========================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-base);
+  /* Now font is theme-dynamic! */
+}
+
+body {
+  background-color: var(--bg-base);
+  background-image: var(--ambient-light);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow: hidden;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Super smooth theme morph */
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Base Panel mappings */
+.mc-panel,
+aside,
+nav,
+.drawer-content {
+  background: var(--bg-card) !important;
+  border-radius: var(--radius-md) !important;
+  border: var(--border-width) var(--border-style) var(--bg-border) !important;
+  box-shadow: var(--shadow-md) !important;
+  backdrop-filter: var(--panel-filter) !important;
+  -webkit-backdrop-filter: var(--panel-filter) !important;
+  transition: all 0.5s ease-out !important;
+}
+
+.drawer-content {
+  background: var(--bg-popup) !important;
+}
+
+.solid-popup {
+  background: var(--bg-popup) !important;
+}
+
+.solid-popup input,
+.solid-popup select,
+.solid-popup textarea {
+  background: var(--bg-popup-soft) !important;
+}
+
+.solid-popup .popup-surface {
+  background: var(--bg-popup-soft) !important;
+}
+
+.solid-popup button[style*="background: var(--bg-input)"],
+.solid-popup button[style*="background: var(--bg-card)"] {
+  background: var(--bg-popup-soft) !important;
+}
+
+/* Base Button Engine */
+button {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: var(--border-width) var(--border-style) var(--bg-border) !important;
+  border-radius: var(--btn-radius) !important;
+  box-shadow: var(--btn-shadow) !important;
+  font-weight: var(--ui-font-weight);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  padding: 6px 12px;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(var(--btn-hover-y));
+  box-shadow: var(--btn-hover-shadow) !important;
+  filter: var(--hover-filter);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(var(--btn-active-y));
+  box-shadow: var(--btn-active-shadow) !important;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Primary Color Overrides */
+button[style*="var(--accent-gold)"],
+button[style*="var(--theme-accent)"],
+button[style*="var(--accent)"] {
+  background: var(--accent-gold) !important;
+  color: #FFF !important;
+  /* Most themes use white text for primary actions */
+  border-color: transparent !important;
+}
+
+[data-theme='terminal'] button[style*="var(--theme-accent)"],
+[data-theme='terminal'] button[style*="var(--accent-gold)"] {
+  color: #000 !important;
+  /* Terminal bright green needs black text */
+}
+
+[data-theme='brutalism'] button[style*="var(--theme-accent)"],
+[data-theme='brutalism'] button[style*="var(--accent-gold)"] {
+  border-color: #000 !important;
+  /* Brutalism still keeps the heavy black border */
+}
+
+/* Inputs & Textareas Engine */
+input,
+select,
+textarea {
+  background: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border: var(--border-width) var(--border-style) var(--bg-border) !important;
+  border-radius: var(--radius-sm) !important;
+  font-family: inherit;
+  /* Inherit theme font */
+  transition: all 0.2s ease !important;
+  font-size: 15px;
+  line-height: 1.8;
+  padding: 8px 12px;
+}
+
+select {
+  background-color: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+}
+
+select option {
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
+
+/* Neumorphism hack for inputs */
+[data-theme='neumorphism'] input,
+[data-theme='neumorphism'] select,
+[data-theme='neumorphism'] textarea {
+  box-shadow: var(--inner-glow) !important;
+}
+
+[data-theme='claymorphism'] input,
+[data-theme='claymorphism'] select,
+[data-theme='claymorphism'] textarea {
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.06), inset -2px -2px 4px rgba(255, 255, 255, 1) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
+  border-color: var(--accent-gold) !important;
+  box-shadow: 0 0 0 3px var(--accent-dim) !important;
+}
+
+/* Workshop chapter title: visually text-like, not form-like */
+.chapter-title-input,
+.chapter-title-input:focus,
+.chapter-title-input:hover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+.chapter-title-input::placeholder {
+  color: var(--text-secondary) !important;
+  opacity: 0.55;
+}
+
+/* Legacy specific classes hack removals */
+div[style*="border: 3px"] {
+  border: var(--border-width) var(--border-style) var(--bg-border) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+/* Smooth Scrollbars via Theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
