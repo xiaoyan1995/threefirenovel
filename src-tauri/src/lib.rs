@@ -187,15 +187,34 @@ fn candidate_resource_roots(app: &tauri::AppHandle) -> Vec<PathBuf> {
 }
 
 fn resolve_bundled_resource(app: &tauri::AppHandle, name: &str) -> Option<PathBuf> {
-    candidate_resource_roots(app)
-        .into_iter()
-        .map(|root| root.join(name))
-        .find(|p| p.exists())
+    let clean_name = name.trim_matches('/');
+    candidate_resource_roots(app).into_iter().find_map(|root| {
+        let direct = root.join(clean_name);
+        if direct.exists() {
+            return Some(direct);
+        }
+
+        // Some bundle layouts place user resources under ".../Resources/resources/".
+        let nested = root.join("resources").join(clean_name);
+        if nested.exists() {
+            return Some(nested);
+        }
+
+        None
+    })
 }
 
 fn spawn_agent(app: &tauri::AppHandle, data_dir: &str) -> Option<Child> {
     let agent_dir = resolve_agent_dir(app);
     let python = resolve_python(app);
+    println!("[sanhuoai] resolved agent_dir={}", agent_dir.display());
+    println!("[sanhuoai] resolved python={}", python.display());
+    if !agent_dir.exists() {
+        eprintln!("[sanhuoai] agent_dir missing: {}", agent_dir.display());
+    }
+    if !python.exists() {
+        eprintln!("[sanhuoai] python missing: {}", python.display());
+    }
     let mut cmd = Command::new(&python);
     cmd.args(["-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", &AGENT_PORT.to_string()]);
     if cfg!(debug_assertions) {
