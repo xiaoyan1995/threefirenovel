@@ -43,22 +43,46 @@ def _download(url: str, dest: Path) -> None:
         shutil.copyfileobj(resp, out)
 
 
+def _extract_version(name: str) -> tuple[int, int, int]:
+    m = re.match(r"^cpython-(\d+)\.(\d+)\.(\d+)\+", name)
+    if not m:
+        return (0, 0, 0)
+    return tuple(int(x) for x in m.groups())
+
+
 def _pick_asset(release: dict, python_series: str, triple: str) -> dict:
     # Example:
     # cpython-3.10.16+20250212-aarch64-apple-darwin-install_only.tar.gz
-    pattern = re.compile(
-        rf"^cpython-{re.escape(python_series)}\.\d+\+.*-{re.escape(triple)}-install_only\.tar\.gz$"
-    )
     assets = release.get("assets", [])
-    for asset in assets:
-        if pattern.match(asset.get("name", "")):
-            return asset
-    names = [a.get("name", "") for a in assets]
-    raise RuntimeError(
-        "No matching python-build-standalone asset found.\n"
-        f"Wanted triple={triple}, python_series={python_series}\n"
-        f"Available assets:\n- " + "\n- ".join(names[:80])
-    )
+    triple_suffix = f"-{triple}-install_only.tar.gz"
+    triple_candidates = [
+        a for a in assets
+        if a.get("name", "").startswith("cpython-") and a.get("name", "").endswith(triple_suffix)
+    ]
+    if not triple_candidates:
+        names = [a.get("name", "") for a in assets]
+        raise RuntimeError(
+            "No matching python-build-standalone asset found for target triple.\n"
+            f"Wanted triple={triple}\n"
+            f"Available assets:\n- " + "\n- ".join(names[:80])
+        )
+
+    if python_series:
+        series_prefix = f"cpython-{python_series}."
+        series_candidates = [a for a in triple_candidates if a.get("name", "").startswith(series_prefix)]
+        if series_candidates:
+            return sorted(
+                series_candidates,
+                key=lambda a: _extract_version(a.get("name", "")),
+                reverse=True,
+            )[0]
+
+    # Fallback: pick latest available version for this target triple
+    return sorted(
+        triple_candidates,
+        key=lambda a: _extract_version(a.get("name", "")),
+        reverse=True,
+    )[0]
 
 
 def _find_install_dir(root: Path) -> Path:
@@ -124,4 +148,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
